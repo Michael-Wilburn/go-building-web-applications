@@ -1,0 +1,112 @@
+<!doctype html>
+<html id="response-div" style="padding: 1rem">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{.Title}}</title>
+        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    </head>
+
+    <body class="m-3 w-96">
+        <section class="flex-col justify-center">
+            <h1 class="text-3xl font-bold">{{.Title}}</h1>
+            <p>{{.Content}}</p>
+            <p class="">{{.Date}}</p>
+        </section>
+        <section>
+            {{range .Comments}}
+            <div class="comment">
+                <hr />
+                <div><strong>Comment by:</strong> {{.Name}} ({{.Email}})</div>
+                {{.CommentText}}
+                <div class="comment_edit">
+                    <h3>Edit</h3>
+                    <form
+                        hx-put="/api/comments/{{.Id}}"
+                        hx-target="#response-div"
+                    >
+                        <div>
+                            <input
+                                type=" text"
+                                class="edit_id"
+                                name="guid"
+                                value="{{$.GUID}}"
+                            />
+                            <input
+                                type="text"
+                                name="name"
+                                class="edit_name"
+                                placeholder="Your Name"
+                                value="{{.Name}}"
+                            />
+                            <input
+                                type="text"
+                                name="email"
+                                class="edit_email"
+                                placeholder="Your Email"
+                                value="{{.Email}}"
+                            />
+                        </div>
+                        <textarea
+                            rows="5"
+                            cols="50"
+                            maxlength="100"
+                            class="edit_comments"
+                            name="comments"
+                            style="text-align:start,resize: none;"
+                        >
+                {{.CommentText}}
+            </textarea
+                        >
+                        <button type="submit">editar</button>
+                    </form>
+                </div>
+            </div>
+            {{end}}
+        </section>
+        <br />
+        <hr />
+        <div id="comments">
+            <form action="/api/comments" method="POST">
+                <input type="hidden" name="pageId" value="{{.Id}}" />
+                <input type="hidden" name="guid" value="{{.GUID}}" />
+                <div>
+                    <input
+                        type="text"
+                        class="border-2 border-black"
+                        name="name"
+                        placeholder="Your Name"
+                        required
+                    />
+                </div>
+                <div>
+                    <input
+                        type="email"
+                        class="border-2 border-black"
+                        name="email"
+                        placeholder="Your Email"
+                        required
+                    />
+                </div>
+                <div>
+                    <textarea
+                        rows="4"
+                        cols="50"
+                        maxlength="100"
+                        name="comments"
+                        class="border-2 border-black"
+                        placeholder="Your Comments"
+                        required
+                    ></textarea>
+                </div>
+                <div>
+                    <input
+                        type="submit"
+                        value="Add Comments"
+                        class="border-green w-fit border-2"
+                    />
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
